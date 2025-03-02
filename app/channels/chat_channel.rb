@@ -10,7 +10,9 @@ class ChatChannel < ApplicationCable::Channel
   end
 
   def speak(data)
-    # クライアントから受信したメッセージをブロードキャスト
-    ActionCable.server.broadcast("chat_channel", { message: data["message"] })
+    # メッセージを保存
+    message = ChatMessage.create!(content: data["message"])
+    # 保存したメッセージをブロードキャスト
+    ActionCable.server.broadcast("chat_channel", { content: message.content, id: message.id })
   end
 end
